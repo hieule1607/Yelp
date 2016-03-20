@@ -29,7 +29,7 @@ GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
 ## Notes
 
-
+   Currently, I'm still incomplete the functions sort by distance, I will finish it as soon as possible.
 
 ## License
 
