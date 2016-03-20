@@ -8,18 +8,16 @@
 
 import UIKit
 
-class BusinessesViewController: UIViewController, FiltersViewControllerDelegate {
-
-    var businesses: [Business]!
+class BusinessesViewController: UIViewController, FiltersViewControllerDelegate, UISearchBarDelegate {
     
     @IBOutlet weak var tableView: UITableView!
-    //var searchBar: UISearchBar
     
+    var businesses: [Business]!
     var selectedStates = [Int:Bool]()
 //    var distance : Int = 0
     var deal = false
     var selectedSegment = 0
-    
+    var searchBar: UISearchBar!
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -28,11 +26,11 @@ class BusinessesViewController: UIViewController, FiltersViewControllerDelegate 
         tableView.estimatedRowHeight = 100
         tableView.rowHeight = UITableViewAutomaticDimension
         
-        //searchBar = UISearchBar()
-        //searchBar.delegate = self
+        searchBar = UISearchBar()
+        searchBar.delegate = self
         
-        //searchBar.sizeToFit()
-        //navigationItem.titleView = searchBar
+        searchBar.sizeToFit()
+        navigationItem.titleView = searchBar
         
         Business.searchWithTerm("Thai", completion: { (businesses: [Business]!, error: NSError!) -> Void in
             self.businesses = businesses
