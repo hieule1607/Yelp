@@ -13,7 +13,7 @@ import UIKit
 }
 
 class FiltersViewController: UIViewController {
-
+    
     @IBOutlet weak var tableView: UITableView!
     weak var delegate: FiltersViewControllerDelegate?
     
@@ -23,17 +23,17 @@ class FiltersViewController: UIViewController {
     var selectedSegment = 0
     var selectedDistance = 0.0
     var isDealOffered: Bool = false
-    var checked: [Bool]!
+    var checked = [Bool]()
     // constants
     var currentChecked: Bool = false
     let SECTION_HEADINGS = [
         "",
-//        "Most Popular",
+        //        "Most Popular",
         "Sort By",
         "Distance",
         "Categories"
     ]
- 
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         checked = [Bool](count: distanceValue.count, repeatedValue: false)
@@ -54,7 +54,7 @@ class FiltersViewController: UIViewController {
         var filters = [String:AnyObject]()
         
         var selectedCategories = [String]()
-
+        
         for (row, isSelected) in switchStates {
             if isSelected {
                 selectedCategories.append(categories[row]["code"]!)
@@ -71,7 +71,7 @@ class FiltersViewController: UIViewController {
         
         delegate?.filterViewController?(self, didUpdateFilters: filters, selectedStates: switchStates)
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -251,14 +251,14 @@ class FiltersViewController: UIViewController {
     
     /*
     // MARK: - Navigation
-
+    
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+    // Get the new view controller using segue.destinationViewController.
+    // Pass the selected object to the new view controller.
     }
     */
-
+    
 }
 extension FiltersViewController: UITableViewDataSource, UITableViewDelegate, SwitchCellDelegate, SegmentedCellDelegate {
     
@@ -270,7 +270,7 @@ extension FiltersViewController: UITableViewDataSource, UITableViewDelegate, Swi
     func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return SECTION_HEADINGS[section]
     }
-
+    
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section{
@@ -297,7 +297,7 @@ extension FiltersViewController: UITableViewDataSource, UITableViewDelegate, Swi
             return cell
         case 1:
             let cell = tableView.dequeueReusableCellWithIdentifier("SegementedCell", forIndexPath: indexPath) as! SegmentedCell
-                cell.segmentedControl.selectedSegmentIndex = selectedSegment
+            cell.segmentedControl.selectedSegmentIndex = selectedSegment
             cell.delegate = self
             return cell
         case 2:
@@ -320,8 +320,10 @@ extension FiltersViewController: UITableViewDataSource, UITableViewDelegate, Swi
                 cell.textLabel?.text = "20 miles"
                 selectedDistance = distanceValue[4]
             }
-            if checked[indexPath.row] {
+            if checked[indexPath.row]{
                 cell.accessoryType = .Checkmark
+                tableView.selectRowAtIndexPath(indexPath, animated: false, scrollPosition: UITableViewScrollPosition.Bottom)
+            
             } else {
                 cell.accessoryType = .None
             }
@@ -332,21 +334,35 @@ extension FiltersViewController: UITableViewDataSource, UITableViewDelegate, Swi
             
             cell.switchLabel.text = categories[indexPath.row]["name"]
             cell.delegate = self
-            
             cell.onSwitch.on = switchStates[indexPath.row] ?? false
             
             return cell
         }
     }
+    
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         if indexPath.section == 2 {
+            if let cell = tableView.cellForRowAtIndexPath(indexPath){
+                //tableView.deselectRowAtIndexPath(indexPath, animated: true)
+                checked[indexPath.row] = !checked[indexPath.row]
+                cell.accessoryType = .Checkmark
+                tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
+            }
             
-            tableView.deselectRowAtIndexPath(indexPath, animated: true)
-            checked[indexPath.row] = !checked[indexPath.row]
-            tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
         }
-        
     }
+    func tableView(tableView: UITableView, didDeselectRowAtIndexPath indexPath: NSIndexPath) {
+        if indexPath.section == 2 {
+            if let cell = tableView.cellForRowAtIndexPath(indexPath){
+                //tableView.deselectRowAtIndexPath(indexPath, animated: true)
+                //checked[indexPath.row] = !checked[indexPath.row]
+                cell.accessoryType = .None
+                //tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
+            }
+            
+        }
+    }
+    
     
     func switchCell(switchCell: SwitchCell, didChangeValue value: Bool) {
         let indexPath = tableView.indexPathForCell(switchCell)!
