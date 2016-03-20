@@ -63,9 +63,9 @@ class BusinessesViewController: UIViewController, FiltersViewControllerDelegate,
     func filterViewController(filtersViewController: FiltersViewController, didUpdateFilters filters: [String : AnyObject], selectedStates: [Int:Bool]) {
         
         let categories = filters["categories"] as? [String]
-        let deal = filters["deal"] as! Bool
-        let selectedSegment = filters["sortBy"] as! Int
-        let distance = filters["distance"] as! Double
+        deal = filters["deal"] as! Bool
+        selectedSegment = filters["sortBy"] as! Int
+        distance = filters["distance"] as! Double
         
         self.selectedStates = selectedStates
         
