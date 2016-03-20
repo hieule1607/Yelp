@@ -16,28 +16,27 @@ class FiltersViewController: UIViewController {
 
     @IBOutlet weak var tableView: UITableView!
     weak var delegate: FiltersViewControllerDelegate?
+    
     var categories: [[String: String]]!
     var switchStates = [Int: Bool]()
-//    var distanceStates = 0
-//    var distanceValue = [0,1600,4800,8000,32000]
-//    var distance : Int = 0
+    var distanceValue = [0,1609.34,4828.02,8046.7,32186.8]
     var selectedSegment = 0
+    var selectedDistance = 0.0
     var isDealOffered: Bool = false
-    
+    var checked: [Bool]!
     // constants
+    var currentChecked: Bool = false
     let SECTION_HEADINGS = [
         "",
 //        "Most Popular",
         "Sort By",
-//        "Distance",
+        "Distance",
         "Categories"
     ]
  
-    
-
-    
     override func viewDidLoad() {
         super.viewDidLoad()
+        checked = [Bool](count: distanceValue.count, repeatedValue: false)
         categories = yelpCategories()
         
         tableView.delegate = self
@@ -65,11 +64,10 @@ class FiltersViewController: UIViewController {
             filters["categories"] = selectedCategories
         }
         filters["deal"] = isDealOffered
-        
+        filters["distance"] = selectedDistance
         filters["sortBy"] = selectedSegment
-//        filters["distance"] = distance
         // Another way to transfer the switchStates
-        filters["selectedIndex"] = switchStates
+        //filters["selectedIndex"] = switchStates
         
         delegate?.filterViewController?(self, didUpdateFilters: filters, selectedStates: switchStates)
     }
@@ -280,6 +278,8 @@ extension FiltersViewController: UITableViewDataSource, UITableViewDelegate, Swi
             return 1
         case 1:
             return 1
+        case 2:
+            return distanceValue.count
         default:
             return categories?.count ?? 0
         }
@@ -300,7 +300,33 @@ extension FiltersViewController: UITableViewDataSource, UITableViewDelegate, Swi
                 cell.segmentedControl.selectedSegmentIndex = selectedSegment
             cell.delegate = self
             return cell
-
+        case 2:
+            let cell = tableView.dequeueReusableCellWithIdentifier("DistanceCell", forIndexPath: indexPath) as UITableViewCell
+            
+            switch indexPath.row {
+            case 0:
+                cell.textLabel?.text = "Auto"
+                selectedDistance = distanceValue[0]
+            case 1:
+                cell.textLabel?.text = "1 mile"
+                selectedDistance = distanceValue[1]
+            case 2:
+                cell.textLabel?.text = "3 miles"
+                selectedDistance = distanceValue[2]
+            case 3:
+                cell.textLabel?.text = "5 miles"
+                selectedDistance = distanceValue[3]
+            default:
+                cell.textLabel?.text = "20 miles"
+                selectedDistance = distanceValue[4]
+            }
+            if checked[indexPath.row] {
+                cell.accessoryType = .Checkmark
+            } else {
+                cell.accessoryType = .None
+            }
+            return cell
+            
         default:
             let cell = tableView.dequeueReusableCellWithIdentifier("SwitchCell", forIndexPath: indexPath) as! SwitchCell
             
@@ -312,13 +338,22 @@ extension FiltersViewController: UITableViewDataSource, UITableViewDelegate, Swi
             return cell
         }
     }
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        if indexPath.section == 2 {
+            
+            tableView.deselectRowAtIndexPath(indexPath, animated: true)
+            checked[indexPath.row] = !checked[indexPath.row]
+            tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
+        }
+        
+    }
     
     func switchCell(switchCell: SwitchCell, didChangeValue value: Bool) {
         let indexPath = tableView.indexPathForCell(switchCell)!
         if indexPath.section == 0 {
             isDealOffered = value
         } else {
-            if indexPath.section == 2 {
+            if indexPath.section == 3 {
                 switchStates[indexPath.row] = value
             }
         }
@@ -326,6 +361,5 @@ extension FiltersViewController: UITableViewDataSource, UITableViewDelegate, Swi
     func segmentedCell(segmentedCell: SegmentedCell, didChangeValue value: Int) {
         selectedSegment = value
     }
-    
 }
 

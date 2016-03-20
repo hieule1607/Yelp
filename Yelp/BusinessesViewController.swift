@@ -14,10 +14,11 @@ class BusinessesViewController: UIViewController, FiltersViewControllerDelegate,
     
     var businesses: [Business]!
     var selectedStates = [Int:Bool]()
-//    var distance : Int = 0
+    var distance: Double = 0
     var deal = false
     var selectedSegment = 0
     var searchBar: UISearchBar!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -62,14 +63,13 @@ class BusinessesViewController: UIViewController, FiltersViewControllerDelegate,
     func filterViewController(filtersViewController: FiltersViewController, didUpdateFilters filters: [String : AnyObject], selectedStates: [Int:Bool]) {
         
         let categories = filters["categories"] as? [String]
-        deal = filters["deal"] as! Bool
-        
-        selectedSegment = filters["sortBy"] as! Int
-//        distance = filters["distance"] as! Int
+        let deal = filters["deal"] as! Bool
+        let selectedSegment = filters["sortBy"] as! Int
+        let distance = filters["distance"] as! Double
         
         self.selectedStates = selectedStates
         
-        Business.searchWithTerm("Restaurants", sort: YelpSortMode(rawValue: selectedSegment), categories: categories, deals: deal) { (businesses:[Business]!, error: NSError!) -> Void in
+        Business.searchWithTerm("Restaurants", sort: YelpSortMode(rawValue: selectedSegment), distance: distance, categories: categories, deals: deal) { (businesses:[Business]!, error: NSError!) -> Void in
             self.businesses = businesses
             self.tableView.reloadData()
         }
@@ -89,3 +89,4 @@ extension BusinessesViewController: UITableViewDataSource, UITableViewDelegate {
         return cell
     }
 }
+
