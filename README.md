@@ -33,3 +33,4 @@ Business.searchWithTerm("Restaurants", sort: .Distance, categories: ["asianfusio
 }
 ```
 Yelp
+#Yelp
