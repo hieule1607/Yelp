@@ -1,36 +1,36 @@
-### Basic Yelp client
+# Week Project 2 - Yelp
 
-This is a headless example of how to implement an OAuth 1.0a Yelp API client. The Yelp API provides an application token that allows applications to make unauthenticated requests to their search API.
+Yelp app is a Yelp search app using the [Yelp API](http://www.yelp.com/developers/documentation/v2/search_api).
 
-### Next steps
+Time spent: 25hours spent in total
 
-- Check out `BusinessesViewController.swift` to see how to use the `Business` model.
+## User Stories
 
-### Sample request
+The following functionality is completed:
 
-**Basic search with query**
+- [x] Search results page
+   - [x] Table rows should be dynamic height according to the content height.
+   - [x] Custom cells should have the proper Auto Layout constraints.
+   - [x] Search bar should be in the navigation bar (doesn't have to expand to show location like the real Yelp app does).
+- [x] Filter page. Unfortunately, not all the filters are supported in the Yelp API.
+   - [x] The filters you should actually have are: category, sort (best match, distance, highest rated), distance, deals (on/off).
+   - [x] The filters table should be organized into sections as in the mock.
+   - [x] You can use the default UISwitch for on/off states.
+   - [x] Clicking on the "Search" button should dismiss the filters page and trigger the search w/ the new filter settings.
+   - [x] Display some of the available Yelp categories (choose any 3-4 that you want).
 
-```
-Business.searchWithTerm("Thai", completion: { (businesses: [Business]!, error: NSError!) -> Void in
-    self.businesses = businesses
-    
-    for business in businesses {
-        print(business.name!)
-        print(business.address!)
-    }
-})
-```
 
-**Advanced search with categories, sort, and deal filters**
 
-```
-Business.searchWithTerm("Restaurants", sort: .Distance, categories: ["asianfusion", "burgers"], deals: true) { (businesses: [Business]!, error: NSError!) -> Void in
+## Video Walkthrough
 
-    for business in businesses {
-        print(business.name!)
-        print(business.address!)
-    }
-}
-```
-Yelp
-#Yelp
+![Video Walkthrough](https://github.com/hieule1607/Yelp/blob/master/Yelp.gif)
+
+GIF created with [LiceCap](http://www.cockos.com/licecap/).
+
+## Notes
+
+
+
+## License
+
+    Copyright 2016 hieule1607
